@@ -2,7 +2,7 @@
 Buddy_System 内存管理 C
 
 最后提供的API: <br/>
-struct page_frame* kalloc(int order);         // -> 分配2^(order-1) 的PAGE_SIZE [在/src/include/buddy.h中] 字节 返回该对应块的描述符地址[struct page_frame*]  <br/>
+struct page_frame* kalloc(int order);         // -> 分配2^(order-1)页 返回描述符地址  <br/>
 void  kfree(struct page_frame* );             //  -> 释放 struct page_frame* 指向的块  <br/>
 (this two API is Thread-Safety)  <br/>
  <br/>
