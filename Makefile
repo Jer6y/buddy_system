@@ -1,47 +1,38 @@
-SRC:= ./src
-BUILD:= ./build
-INCLUDE_PATH:=\
-$(SRC)/include
 
-CC:= gcc
-CCFLAGS:= -g -O0 -lpthread\
-$(foreach it,$(INCLUDE_PATH),-I$(it))
+CROSS_COMPILE:=
+CC:=$(CROSS_COMPILE)gcc
+LD:=$(CROSS_COMPILE)ld
+NM:=$(CROSS_COMPILE)nm
+OBJDUMP:=$(CROSS_COMPILE)objdump 
+OBJCOPY:=$(CROSS_COMPILE)objcopy
 
-LD:= ld
-LDFLAGS:= 
+SRC:=./src
+BUILD:=./build
+INCLUDE_PATH:=$(SRC)/include
+TARGET_NAME:=main
 
-SRC_FILE:= \
-$(SRC)/main.c			\
-$(SRC)/buddy/buddy.c	\
-$(SRC)/util/assert.c
+INCLUDE_PATH:=$(foreach it,$(INCLUDE_PAH),-I$(it))
 
-OBJECTS:= $(patsubst $(SRC)/buddy/%.c,$(BUILD)/buddy/%.o, $(SRC_FILE))
-OBJECTS:= $(patsubst $(SRC)/%.c,$(BUILD)/%.o, $(OBJECTS))
-OBJECTS:= $(patsubst $(SRC)/util/%.c,$(BUILD)/util/%.o, $(OBJECTS))
+CCFLAGS:= -g $(INCLUDE_PAH) 
 
+OBJECTS:= 	$(BUILD)/m_blk.o 	\
+		$(BUILD)/mln_list.o 	\
+		$(BUILD)/m_pool.o		\
+		$(BUILD)/m_data.o		\
+		$(BUILD)/m_slab.o		\
+		$(BUILD)/main.o			
 
-compile:$(BUILD)/main
-	
-$(BUILD)/main: $(OBJECTS)
-	$(CC) $(CCFLAGS) $^ -o $@
-
-$(BUILD)/buddy/%.o:$(SRC)/buddy/%.c
+compile: $(OBJECTS)
 	@mkdir -p $(dir $@)
-	$(CC) $(CCFLAGS) -c $< -o $@
+	$(CC) $(CCFLAGS) $^ -o $(BUILD)/$(TARGET_NAME)
 
 $(BUILD)/%.o:$(SRC)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CCFLAGS) -c $< -o $@
 
-$(BUILD)/util/%.o:$(SRC)/util/%.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CCFLAGS) -c $< -o $@
-
-debug:
-	@echo $(CCFLAGS)
+test:
 	@echo $(OBJECTS)
-
 clean:
 	rm -rf $(BUILD)
 
-.PHONY: compile clean debug
+.PHONY: compile clean test
