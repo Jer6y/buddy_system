@@ -29,7 +29,7 @@
 
 #define M_LOCK_T                                    pthread_mutex_t
 
-#define M_LOCK_INIT(...)                            pthread_mutex_init(__VA_ARGS__)
+#define M_LOCK_INIT(lk,attr)                        pthread_mutex_init(lk,attr)
 
 #define M_LOCK(lk)                                  pthread_mutex_lock(lk)
 
