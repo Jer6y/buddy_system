@@ -50,7 +50,7 @@ int main()
         }
     }
 
-    m_slab_free(slab_handler);
+    m_slab_free(slab_handler,&d_mmpool_handler);
     
     return 0;
 }
