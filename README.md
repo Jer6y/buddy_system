@@ -11,36 +11,36 @@
 M_API void  m_pool_init(m_pool_t* pool_handler,void* start_addr,int length);
 ```
 
-- **功能说明: ** 初始化一个伙伴分配器
+- **功能说明:**  初始化一个伙伴分配器
 - **参数说明:**
-  - **pool_handler ：**  类型为m_pool_t 的句柄，由用户自己开辟空间定义（可以在全局区 也可以在栈上）
-  - **start_addr ：** 需要管理的地址的起始地址
-  - **length ：** 需要管理的地址的长度 【尽量为PAGE_SIZE的整数倍，如果不是PAGE_SIZE的整数倍，可能并没有完全管理起来！】
-- **返回值说明 : **
+  - **pool_handler:**  类型为m_pool_t 的句柄，由用户自己开辟空间定义（可以在全局区 也可以在栈上）
+  - **start_addr:** 需要管理的地址的起始地址
+  - **length:** 需要管理的地址的长度 【尽量为PAGE_SIZE的整数倍，如果不是PAGE_SIZE的整数倍，可能并没有完全管理起来！】
+- **返回值说明:** 
   - **none** 
 
 ```c
 M_API void* m_pool_alloc(m_pool_t* pool_handler,int order);
 ```
 
-- **功能说明: ** 向一个伙伴分配器需求 2^(order-1) 大小的页
+- **功能说明:**  向一个伙伴分配器需求 2^(order-1) 大小的页
 - **参数说明:**
-  - **pool_handler ：**  类型为m_pool_t 的句柄，由用户自己开辟空间定义（可以在全局区 也可以在栈上）
-  - **order ：** 想要分配的大小的阶 应该在 [1,M_MAX_ORDER 之间] [这些配置可以在 m_config.h 里面配置哦!!!!]
-- **返回值说明 : **
+  - **pool_handler:**  类型为m_pool_t 的句柄，由用户自己开辟空间定义（可以在全局区 也可以在栈上）
+  - **order:** 想要分配的大小的阶 应该在 [1,M_MAX_ORDER 之间] [这些配置可以在 m_config.h 里面配置哦!!!!]
+- **返回值说明:** 
   - **NULL :** 没有足够的空间分配了
-  - **其他：** 所对应的页的起始地址
+  - **其他:** 所对应的页的起始地址
 
 ```c
 M_API void  m_pool_free(m_pool_t* pool_handler,void* free_addr,int order);
 ```
 
-- **功能说明: ** 向伙伴分配器释放一个 2^(order-1)大小的页
+- **功能说明:** 向伙伴分配器释放一个 2^(order-1)大小的页
 - **参数说明:**
-  - **pool_handler ：**  类型为m_pool_t 的句柄，由用户自己开辟空间定义（可以在全局区 也可以在栈上）
-  - **free_addr ：**  需要释放的地址首地址
-  - **order ：** 对应的页的阶
-- **返回值说明 : **
+  - **pool_handler:**  类型为m_pool_t 的句柄，由用户自己开辟空间定义（可以在全局区 也可以在栈上）
+  - **free_addr:**  需要释放的地址首地址
+  - **order:** 对应的页的阶
+- **返回值说明:**
   - **none** 
 
 ### slab 
@@ -49,44 +49,45 @@ M_API void  m_pool_free(m_pool_t* pool_handler,void* free_addr,int order);
 M_API m_slab_t* m_slab_init(void* start,int order,int obj_size);
 ```
 
-- **功能说明: ** 初始化一个slab分配器
+- **功能说明:** 初始化一个slab分配器
 - **参数说明:**
-  - **start：**  空余空间的起始地址，由伙伴系统分配，也可以是一块自定义的地址，但是如果是自定义的，需要满足(2^(order-1))页大小
-  - **order ：** 对应的页的阶
-  - **obj_size : ** slab 管理的对象的块带线啊哦
-- **返回值说明 : **
+  - **start:**  空余空间的起始地址，由伙伴系统分配，也可以是一块自定义的地址，但是如果是自定义的，需要满足(2^(order-1))页大小
+  - **order:** 对应的页的阶
+  - **obj_size:** slab 管理的对象的块带线啊哦
+- **返回值说明:**
   - 返回对应的slab分配器的句柄 【从何而来呢？当然是start 那一块抠出来的啦】
 
 ```c
-M_API void      m_slab_free(m_slab_t* slab_handler);
+M_API void      m_slab_free(m_slab_t* slab_handler,m_pool_t* pool_handler);
 ```
 
-- **功能说明: ** 释放一个slab分配器
+- **功能说明:** 释放一个slab分配器, 释放到对应的伙伴分配器的池里去
 - **参数说明:**
-  - **slab_handler : ** slab分配器句柄
-- **返回值说明 : **
+  - **slab_handler:** slab分配器句柄
+  - **pool_handler:**伙伴分配器的句柄
+- **返回值说明:**
   - **none** 
 
 ```c
 M_API void*     m_slab_obj_alloc(m_slab_t* slab_handler);
 ```
 
-- **功能说明: ** 向slab分配器请求分配一个对象
+- **功能说明:** 向slab分配器请求分配一个对象
 - **参数说明:**
-  - **slab_handler : ** slab分配器句柄
-- **返回值说明 : **
-  - **NULL : ** 没有空间了
-  - **其余 ：**对应的对象的地址
+  - **slab_handler:** slab分配器句柄
+- **返回值说明:**
+  - **NULL:** 没有空间了
+  - **其余:**对应的对象的地址
 
 ```c
 M_API void      m_slab_obj_free(m_slab_t* slab_handler,void* start_addr);
 ```
 
-- **功能说明: ** 向slab分配器释放一个对象
+- **功能说明:** 向slab分配器释放一个对象
 - **参数说明:**
-  - **slab_handler : ** slab分配器句柄
-  - **start_addr: ** 释放对象的地址
-- **返回值说明 : **
+  - **slab_handler:** slab分配器句柄
+  - **start_addr:** 释放对象的地址
+- **返回值说明:**
   - **none**
 
 
