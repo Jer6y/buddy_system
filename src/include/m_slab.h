@@ -19,7 +19,7 @@ typedef struct m_slab_s {
 
 M_API m_slab_t* m_slab_init(void* start,int order,int obj_size);
 
-M_API void      m_slab_free(m_slab_t* slab_handler);
+M_API void      m_slab_free(m_slab_t* slab_handler,m_pool_t* pool_handler);
 
 M_API void*     m_slab_obj_alloc(m_slab_t* slab_handler);
 

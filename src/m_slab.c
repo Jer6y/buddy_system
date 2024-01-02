@@ -56,12 +56,22 @@ M_API m_slab_t* m_slab_init(void* start,int order,int obj_size)
     return slab_hanlder;
 }
 
-M_API void      m_slab_free(m_slab_t* slab_handler)
+M_API void      m_slab_free(m_slab_t* slab_handler,m_pool_t* pool_handler)
 {
 #if (M_ARG_CHECK_FUNC == M_ENABLE)
     if(slab_handler == (m_slab_t*)0 || slab_handler->obj_type != OBJ_M_SLAB)
     {
         M_DEBUG(M_LEVEL_ERR,"m_slab_free: a null ptr %s %d\n",__FILE__,__LINE__);
+        M_EXIT(-1);
+    }
+    if(pool_handler == (m_pool_t*)0 || pool_handler->obj_type != OBJ_M_POOL)
+    {
+	    M_DEBUG(M_LEVEL_ERR,"m_slab_free: a null ptr %s %d\n",__FILE__,__LINE__);
+	    M_EXIT(-1);
+    }
+    if(!(slab_handler->order >0 && slab_handler->order <= M_MAX_ORDER))
+    {
+        M_DEBUG(M_LEVEL_ERR,"m_slab_free: a error order for slab_handler %s %d\n",__FILE__,__LINE__);
         M_EXIT(-1);
     }
 #endif
@@ -74,7 +84,7 @@ M_API void      m_slab_free(m_slab_t* slab_handler)
     {
         clear_ptr[i]=0;
     }
-    m_pool_free(&d_mmpool_handler,start,order);
+    m_pool_free(pool_handler,start,order);
 }
 
 M_API void*     m_slab_obj_alloc(m_slab_t* slab_handler)
