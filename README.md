@@ -64,7 +64,7 @@ M_API void      m_slab_free(m_slab_t* slab_handler,m_pool_t* pool_handler);
 - **功能说明:** 释放一个slab分配器, 释放到对应的伙伴分配器的池里去
 - **参数说明:**
   - **slab_handler:** slab分配器句柄
-  - **pool_handler:**伙伴分配器的句柄
+  - **pool_handler**: 伙伴分配器的句柄
 - **返回值说明:**
   - **none** 
 
@@ -77,7 +77,7 @@ M_API void*     m_slab_obj_alloc(m_slab_t* slab_handler);
   - **slab_handler:** slab分配器句柄
 - **返回值说明:**
   - **NULL:** 没有空间了
-  - **其余:**对应的对象的地址
+  - **其余**:对应的对象的地址
 
 ```c
 M_API void      m_slab_obj_free(m_slab_t* slab_handler,void* start_addr);
